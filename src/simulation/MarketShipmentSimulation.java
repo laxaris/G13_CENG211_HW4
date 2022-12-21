@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Queue;
 
 import container.*;
+import exceptions.SameSerialNumberException;
 import items.CountableItem;
 import items.UncountableItem;
 
@@ -40,7 +41,7 @@ public class MarketShipmentSimulation {
 
     private static void Produce(ArrayList<String> command, ArrayList<String> serialNumberList) throws SameSerialNumberException {
         if(serialNumberList.contains(command.get(command.size()-1))){
-            throw new SameSerialNumberException("Same serial number");
+            throw new SameSerialNumberException();
         }
         else{
             serialNumberList.add(command.get(command.size()-1));}
