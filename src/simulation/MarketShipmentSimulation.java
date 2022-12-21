@@ -8,13 +8,19 @@ import items.CountableItem;
 import items.UncountableItem;
 
 public class MarketShipmentSimulation {
+    
     public static void runApp(){
+        ArrayList<String> serialNumberList = new ArrayList<>();
         Queue<ArrayList<String>> commands = fileIO.FileIO.commands;
         while(!commands.isEmpty()){
             ArrayList<String> command = commands.poll();
             switch(command.get(0)){
                 case "1":
-                    Produce(command);
+                try{
+                    Produce(command,serialNumberList);}
+                    catch(SameSerialNumberException e){
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case "2":
                     //ToDO
@@ -32,7 +38,12 @@ public class MarketShipmentSimulation {
         } 
     }
 
-    private static void Produce(ArrayList<String> command) {
+    private static void Produce(ArrayList<String> command, ArrayList<String> serialNumberList) throws SameSerialNumberException {
+        if(serialNumberList.contains(command.get(command.size()-1))){
+            throw new SameSerialNumberException("Same serial number");
+        }
+        else{
+            serialNumberList.add(command.get(command.size()-1));}
         switch(command.get(1)){
             case "B1":
                 NumberBox numberBox = new NumberBox(command.get(1), Integer.parseInt(command.get(2)),Integer.parseInt(command.get(3)), command.get(4));
