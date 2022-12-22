@@ -1,6 +1,14 @@
 package container;
 
+import java.util.ArrayList;
+
+import exceptions.ItemPlacedDirectlyException;
+import exceptions.LoadedBoxException;
+import exceptions.ThoseShippedException;
+import items.InterfaceItem;
+
 public class Container {
+    private ArrayList<InterfaceItemBox> list;
     private String code;
     private int volume;
     private String serialNumber;
@@ -23,6 +31,15 @@ public class Container {
         this.volume = container.volume;
         this.serialNumber = container.serialNumber;
     }
+
+    public void add(InterfaceItemBox itemBox)throws LoadedBoxException{
+        list.add(itemBox);
+    }
+
+    public void add(InterfaceItem item)throws ItemPlacedDirectlyException{
+        throw new ItemPlacedDirectlyException("Item with serial number " + item.getSerialNumber() + " can not be placed directly into the container");
+    }
+
 
     public String getCode() {
         return code;
@@ -47,4 +64,6 @@ public class Container {
     public String toString() {
         return "Code: " + code + " Volume: " + volume + " Serial Number: " + serialNumber +" Cost: " + getCost();
     }
+
+
 }
