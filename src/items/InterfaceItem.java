@@ -13,4 +13,6 @@ public interface InterfaceItem {
     public double getPrice();
 
     public double getCost();
+
+    public String getCountability();
 }

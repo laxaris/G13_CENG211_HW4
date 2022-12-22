@@ -9,6 +9,8 @@ public class UncountableItem implements InterfaceItem {
     private int costPerUnit;
     private int pricePerUnit;
     private String name;
+    private final String countability = "Uncountable";
+    private boolean boxed;
 
     public UncountableItem(String code, double mass, double volume, String serialNumber) {
         this.code = code;
@@ -18,6 +20,7 @@ public class UncountableItem implements InterfaceItem {
         this.costPerUnit = enums.Items.searchItem(code).getCost();
         this.pricePerUnit = enums.Items.searchItem(code).getPrice();
         this.name = enums.Items.searchItem(code).getName();
+        this.boxed = false;
     }
     public UncountableItem(){
         this.code = "";
@@ -27,6 +30,7 @@ public class UncountableItem implements InterfaceItem {
         this.costPerUnit = 0;
         this.pricePerUnit = 0;
         this.name= "";
+        this.boxed = false;
     }
     public UncountableItem(UncountableItem item){
         this.code = item.code;
@@ -36,10 +40,23 @@ public class UncountableItem implements InterfaceItem {
         this.costPerUnit = item.costPerUnit;
         this.pricePerUnit = item.pricePerUnit;
         this.name = item.name;
+        this.boxed = item.getBoxed();
     }
 
     public String getName(){
         return name;
+    }
+
+    public void setBoxed(boolean boxed){
+        this.boxed = boxed;
+    }
+
+    public boolean getBoxed(){
+        return boxed; 
+    }
+
+    public String getCountability() {
+        return countability;
     }
 
     public String getCode() {

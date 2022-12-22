@@ -11,14 +11,13 @@ import items.UncountableItem;
 public class MarketShipmentSimulation{
     
     public static void runApp(){
-        ArrayList<String> serialNumberList = new ArrayList<>();
         Queue<ArrayList<String>> commands = fileIO.FileIO.commands;
         while(!commands.isEmpty()){
             ArrayList<String> command = commands.poll();
             switch(command.get(0)){
                 case "1":
                 try{
-                    Produce(command,serialNumberList);}
+                    CommandMethods.produce(command);}
                     catch(SameSerialNumberException e){
                         System.out.println(e.getMessage());
                     }
@@ -39,41 +38,5 @@ public class MarketShipmentSimulation{
         } 
     }
 
-    private static void Produce(ArrayList<String> command, ArrayList<String> serialNumberList) throws SameSerialNumberException {
-        if(serialNumberList.contains(command.get(command.size()-1))){
-            throw new SameSerialNumberException("Item with the serial number "+ command.get(command.size()-1)+" cannot be produced (EX: 1 existing serial number");
-        }
-        else{
-            serialNumberList.add(command.get(command.size()-1));}
-        switch(command.get(1)){
-            case "B1":
-                NumberBox numberBox = new NumberBox(command.get(1), Integer.parseInt(command.get(2)),Integer.parseInt(command.get(3)), command.get(4));
-                System.out.println(numberBox.toString());
-                break;
-            case "B2":
-                MassBox massBox = new MassBox(command.get(1), Integer.parseInt(command.get(2)),Integer.parseInt(command.get(3)), command.get(4));
-                System.out.println(massBox.toString());
-                break;
-            case "C1":
-                Container container = new Container(command.get(1), Integer.parseInt(command.get(2)), command.get(3));
-                System.out.println(container.toString());
-                break;
-            default:
-            switch (enums.Items.searchItem(command.get(1)).getCountability()) {
-                case "Countable":
-                    CountableItem item = new CountableItem(command.get(1),Double.parseDouble(command.get(0)), command.get(3));
-                    System.out.println(item.toString());
-                    break;
-                case "Uncountable":
-                    UncountableItem item2 = new UncountableItem(command.get(1), Double.parseDouble(command.get(2)),Double.parseDouble(command.get(3)), command.get(4));
-                    System.out.println(item2.toString());
-                    break;
-                default:
-                    System.out.println("Invalid command");
-                    break;
-            }
-                break;
-        }
-        
-    }
+    
 }
