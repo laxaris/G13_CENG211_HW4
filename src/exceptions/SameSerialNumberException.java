@@ -5,7 +5,7 @@ public class SameSerialNumberException extends Exception{
         super(message);
     }
     public SameSerialNumberException(){
-        super("Serial number must be unique, therefore this serial number is invalid!");
+        super("Item cannot be produced (EX: 1 existing serial number)");
     }
 
 }

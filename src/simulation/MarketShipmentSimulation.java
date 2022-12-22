@@ -8,7 +8,7 @@ import exceptions.SameSerialNumberException;
 import items.CountableItem;
 import items.UncountableItem;
 
-public class MarketShipmentSimulation {
+public class MarketShipmentSimulation{
     
     public static void runApp(){
         ArrayList<String> serialNumberList = new ArrayList<>();
@@ -41,7 +41,7 @@ public class MarketShipmentSimulation {
 
     private static void Produce(ArrayList<String> command, ArrayList<String> serialNumberList) throws SameSerialNumberException {
         if(serialNumberList.contains(command.get(command.size()-1))){
-            throw new SameSerialNumberException();
+            throw new SameSerialNumberException("Item with the serial number "+ command.get(command.size()-1)+" cannot be produced (EX: 1 existing serial number");
         }
         else{
             serialNumberList.add(command.get(command.size()-1));}
