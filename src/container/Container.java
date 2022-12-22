@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import exceptions.ItemPlacedDirectlyException;
 import exceptions.LoadedBoxException;
-import exceptions.ThoseShippedException;
 import items.InterfaceItem;
 
 public class Container {
@@ -18,22 +17,29 @@ public class Container {
         this.code = code;
         this.volume = volume;
         this.serialNumber = serialNumber;
+        this.list = new ArrayList<InterfaceItemBox>();
     }
 
     public Container() {
         this.code = "";
-        this.volume = 1;
+        this.volume = 0;
         this.serialNumber = "";
+        this.list = new ArrayList<InterfaceItemBox>();
     }
 
     public Container(Container container) {
         this.code = container.code;
         this.volume = container.volume;
         this.serialNumber = container.serialNumber;
+        this.list = new ArrayList<>();
+        for(InterfaceItemBox itemBox : container.list){
+            list.add(itemBox.clone());
+        }
     }
 
     public void add(InterfaceItemBox itemBox)throws LoadedBoxException{
         list.add(itemBox);
+        System.out.println("Item box with serial number " + itemBox.getSerialNumber() + " added to the container with serial number " + serialNumber);
     }
 
     public void add(InterfaceItem item)throws ItemPlacedDirectlyException{

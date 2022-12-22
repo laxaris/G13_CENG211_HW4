@@ -49,6 +49,7 @@ public class MassBox implements InterfaceItemBox {
         capacityChecker((UncountableItem)item);
         addItemToLoadedBoxCheck();
         list.add((UncountableItem) item);
+        System.out.println(serialNumber+" added item "+item.getSerialNumber());
     }
 
     private int totalVolume(){

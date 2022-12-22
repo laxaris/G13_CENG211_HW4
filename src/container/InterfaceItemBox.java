@@ -9,4 +9,5 @@ public interface InterfaceItemBox {
     public int getVolume();
     public String getSerialNumber();
     public void add(InterfaceItem item) throws MismatchItemTypeException, MoreThanCapacityException, LoadedBoxException;
+    public InterfaceItemBox clone();
 }

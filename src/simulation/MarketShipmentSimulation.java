@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Queue;
 
 import container.*;
+import exceptions.ItemPlacedDirectlyException;
+import exceptions.LoadedBoxException;
 import exceptions.SameSerialNumberException;
 import items.CountableItem;
 import items.UncountableItem;
@@ -23,7 +25,11 @@ public class MarketShipmentSimulation{
                     }
                     break;
                 case "2":
-                    //ToDO
+                    try {
+                        CommandMethods.load(command);
+                    } catch (LoadedBoxException | ItemPlacedDirectlyException e) {
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case "3":
                     //ToDO 

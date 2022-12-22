@@ -49,6 +49,7 @@ public class NumberBox implements InterfaceItemBox {
         capacityChecker((CountableItem) item);
         addItemToLoadedBoxCheck();
         list.add((CountableItem) item);
+        System.out.println(serialNumber+" added item "+item.getSerialNumber());
         
     }
 
