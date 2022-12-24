@@ -6,6 +6,9 @@ import java.util.Queue;
 import container.*;
 import exceptions.ItemPlacedDirectlyException;
 import exceptions.LoadedBoxException;
+import exceptions.LoadedItemException;
+import exceptions.MismatchItemTypeException;
+import exceptions.MoreThanCapacityException;
 import exceptions.SameSerialNumberException;
 import items.CountableItem;
 import items.UncountableItem;
@@ -27,7 +30,7 @@ public class MarketShipmentSimulation{
                 case "2":
                     try {
                         CommandMethods.load(command);
-                    } catch (LoadedBoxException | ItemPlacedDirectlyException e) {
+                    } catch (LoadedItemException|MoreThanCapacityException | MismatchItemTypeException|LoadedBoxException | ItemPlacedDirectlyException e) {
                         System.out.println(e.getMessage());
                     }
                     break;

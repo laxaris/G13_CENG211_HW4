@@ -9,6 +9,7 @@ import container.MassBox;
 import container.NumberBox;
 import exceptions.ItemPlacedDirectlyException;
 import exceptions.LoadedBoxException;
+import exceptions.LoadedItemException;
 import exceptions.MismatchItemTypeException;
 import exceptions.MoreThanCapacityException;
 import exceptions.SameSerialNumberException;
@@ -73,7 +74,7 @@ public class CommandMethods {
             serialNumberList.add(command.get(command.size()-1));}
     }
 
-    public static void load(ArrayList<String> command) throws LoadedBoxException, ItemPlacedDirectlyException {
+    public static void load(ArrayList<String> command) throws LoadedBoxException, ItemPlacedDirectlyException, MismatchItemTypeException, MoreThanCapacityException, LoadedItemException {
         String serialNumberOfLoader = command.get(2);
         String serialNumberOfLoadedItem = command.get(1);
         if(containerMap.containsKey(serialNumberOfLoader)){
@@ -87,16 +88,12 @@ public class CommandMethods {
 
         else if(boxMap.containsKey(serialNumberOfLoader)){
             if(itemMap.containsKey(serialNumberOfLoadedItem)){
-                try{boxMap.get(serialNumberOfLoader).add(itemMap.remove(serialNumberOfLoadedItem));}
-                catch(MismatchItemTypeException e){
-                    System.out.println(e.getMessage());
-                }
-                catch(MoreThanCapacityException e){
-                    System.out.println(e.getMessage());
-                }catch(LoadedBoxException e){
-                    System.out.println(e.getMessage());
-                }
+                boxMap.get(serialNumberOfLoader).add(itemMap.remove(serialNumberOfLoadedItem));
                 
+                
+            }
+            else{
+                throw new LoadedItemException("The item with serial number "+serialNumberOfLoadedItem+"is already loaded to a box ");
             }
         }
         else{
