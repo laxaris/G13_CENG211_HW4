@@ -11,9 +11,9 @@ import exceptions.ItemPlacedDirectlyException;
 import exceptions.LoadedBoxException;
 import exceptions.LoadedItemException;
 import exceptions.MismatchItemTypeException;
-import exceptions.MoreThanCapacityException;
+import exceptions.BoxCapacityException;
+import exceptions.ContainerCapacityException;
 import exceptions.SameSerialNumberException;
-import exceptions.ThoseShippedException;
 import items.CountableItem;
 import items.InterfaceItem;
 import items.UncountableItem;
@@ -22,8 +22,8 @@ public class CommandMethods {
     private static HashMap<String,Container> containerMap = new HashMap<String,Container>();
     private static HashMap<String,InterfaceItemBox> boxMap = new HashMap<String,InterfaceItemBox>();
     private static HashMap<String,InterfaceItem> itemMap = new HashMap<String,InterfaceItem>();
-    
     private static ArrayList<String> serialNumberList = new ArrayList<String>();
+    private static double revenue = 0;
     
     public static void produce(ArrayList<String> command) throws SameSerialNumberException {
         serialNumberExceptionChecker(command);
@@ -31,29 +31,34 @@ public class CommandMethods {
             case "B1":
                 NumberBox numberBox = new NumberBox(command.get(1), Integer.parseInt(command.get(2)),Integer.parseInt(command.get(3)), command.get(4));
                 boxMap.put(numberBox.getSerialNumber(),numberBox);
-                System.out.println(numberBox.toString());
+                revenue -= numberBox.getCost();
+                System.out.println(numberBox.toString()+" Revenue: "+revenue+"");
                 break;
             case "B2":
                 MassBox massBox = new MassBox(command.get(1), Integer.parseInt(command.get(2)),Integer.parseInt(command.get(3)), command.get(4));
                 boxMap.put(massBox.getSerialNumber(), massBox);
-                System.out.println(massBox.toString());
+                revenue -= massBox.getCost();
+                System.out.println(massBox.toString()+" Revenue: "+revenue+"");
                 break;
             case "C1":
                 Container container = new Container(command.get(1), Integer.parseInt(command.get(2)), command.get(3));
                 containerMap.put(container.getSerialNumber(),container);
-                System.out.println(container.toString());
+                revenue -= container.getCost();
+                System.out.println(container.toString()+" Revenue: "+revenue+"");
                 break;
             default:
             switch (enums.Items.searchItem(command.get(1)).getCountability()) {
                 case "Countable":
-                    CountableItem countableItem = new CountableItem(command.get(1),Double.parseDouble(command.get(0)), command.get(3));
+                    CountableItem countableItem = new CountableItem(command.get(1),Double.parseDouble(command.get(2)), command.get(3));
                     itemMap.put(countableItem.getSerialNumber(),countableItem);
-                    System.out.println(countableItem.toString());
+                    revenue -= countableItem.getCost();
+                    System.out.println(countableItem.toString()+" Revenue: "+revenue+"");
                     break;
                 case "Uncountable":
                     UncountableItem uncountableItem = new UncountableItem(command.get(1), Double.parseDouble(command.get(2)),Double.parseDouble(command.get(3)), command.get(4));
                     itemMap.put(uncountableItem.getSerialNumber(),uncountableItem);
-                    System.out.println(uncountableItem.toString());
+                    revenue -= uncountableItem.getCost();
+                    System.out.println(uncountableItem.toString()+" Revenue: "+revenue+"");
                     break;
                 default:
                     System.out.println("Invalid command");
@@ -74,23 +79,23 @@ public class CommandMethods {
             serialNumberList.add(command.get(command.size()-1));}
     }
 
-    public static void load(ArrayList<String> command) throws LoadedBoxException, ItemPlacedDirectlyException, MismatchItemTypeException, MoreThanCapacityException, LoadedItemException {
+    public static void load(ArrayList<String> command) throws LoadedBoxException, ItemPlacedDirectlyException, MismatchItemTypeException, ContainerCapacityException, LoadedItemException, BoxCapacityException {
         String serialNumberOfLoader = command.get(2);
         String serialNumberOfLoadedItem = command.get(1);
         if(containerMap.containsKey(serialNumberOfLoader)){
             if(boxMap.containsKey(serialNumberOfLoadedItem)){
-                containerMap.get(serialNumberOfLoader).add(boxMap.remove(serialNumberOfLoadedItem));
-
+                containerMap.get(serialNumberOfLoader).add(boxMap.get(serialNumberOfLoadedItem));
+                boxMap.remove(serialNumberOfLoadedItem);
             }else if(itemMap.containsKey(serialNumberOfLoadedItem)){
-                containerMap.get(serialNumberOfLoader).add(itemMap.remove(serialNumberOfLoadedItem));
+                containerMap.get(serialNumberOfLoader).add(itemMap.get(serialNumberOfLoadedItem));
+                itemMap.remove(serialNumberOfLoadedItem);
             }
         }
 
         else if(boxMap.containsKey(serialNumberOfLoader)){
             if(itemMap.containsKey(serialNumberOfLoadedItem)){
-                boxMap.get(serialNumberOfLoader).add(itemMap.remove(serialNumberOfLoadedItem));
-                
-                
+                boxMap.get(serialNumberOfLoader).add(itemMap.get(serialNumberOfLoadedItem));
+                itemMap.remove(serialNumberOfLoadedItem);
             }
             else{
                 throw new LoadedItemException("The item with serial number "+serialNumberOfLoadedItem+"is already loaded to a box ");
@@ -104,9 +109,32 @@ public class CommandMethods {
     }
 
 
-    private static void itemToContainerChecker(){
 
+    public static void ship(ArrayList<String> command) {
+        String serialNumberOfShippedItem = command.get(1);
+        if(containerMap.containsKey(serialNumberOfShippedItem)){
+            revenue += containerMap.get(serialNumberOfShippedItem).getRevenue();
+            System.out.print("Container "+serialNumberOfShippedItem+" is shipped. \t" + "Revenue: "+revenue+"");
+            containerMap.remove(serialNumberOfShippedItem);
+        }
+        else{
+            //To do : throw exception
+        }
+ }
+
+
+
+    public static void revenue(ArrayList<String> command) {
+        if(command.get(1).equals("1")){
+            double unearedRevenue = 0;
+            for(InterfaceItem item : itemMap.values()){
+                unearedRevenue += item.getPrice();
+            }
+            System.out.println("\nUnearned revenue: "+unearedRevenue+"\n");
+        }
+        else if(command.get(1).equals("2")){
+            System.out.println("Total revenue: " + revenue+"\n");
+        }
     }
-    
     
 }

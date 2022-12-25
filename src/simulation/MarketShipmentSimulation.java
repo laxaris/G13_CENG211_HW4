@@ -8,7 +8,8 @@ import exceptions.ItemPlacedDirectlyException;
 import exceptions.LoadedBoxException;
 import exceptions.LoadedItemException;
 import exceptions.MismatchItemTypeException;
-import exceptions.MoreThanCapacityException;
+import exceptions.BoxCapacityException;
+import exceptions.ContainerCapacityException;
 import exceptions.SameSerialNumberException;
 import items.CountableItem;
 import items.UncountableItem;
@@ -30,15 +31,15 @@ public class MarketShipmentSimulation{
                 case "2":
                     try {
                         CommandMethods.load(command);
-                    } catch (LoadedItemException|MoreThanCapacityException | MismatchItemTypeException|LoadedBoxException | ItemPlacedDirectlyException e) {
+                    } catch (BoxCapacityException|LoadedItemException|ContainerCapacityException | MismatchItemTypeException|LoadedBoxException | ItemPlacedDirectlyException e) {
                         System.out.println(e.getMessage());
                     }
                     break;
                 case "3":
-                    //ToDO 
+                    CommandMethods.ship(command); 
                     break;
                 case "4":
-                    //ToDO
+                    CommandMethods.revenue(command);
                     break;
                 default:
                     System.out.println("Invalid command");

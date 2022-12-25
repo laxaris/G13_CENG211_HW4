@@ -4,27 +4,31 @@ import java.util.ArrayList;
 
 import exceptions.ItemPlacedDirectlyException;
 import exceptions.LoadedBoxException;
+import exceptions.ContainerCapacityException;
 import items.InterfaceItem;
 
 public class Container {
     private ArrayList<InterfaceItemBox> list;
     private String code;
-    private int volume;
+    private double volume;
+    private double instantVolume;
     private String serialNumber;
     private final int costPerUnit = 1;
 
-    public Container(String code, int volume, String serialNumber) {
+    public Container(String code, double volume, String serialNumber) {
         this.code = code;
         this.volume = volume;
         this.serialNumber = serialNumber;
         this.list = new ArrayList<InterfaceItemBox>();
+        this.instantVolume = 0;
     }
 
     public Container() {
         this.code = "";
-        this.volume = 0;
+        this.volume = 10;
         this.serialNumber = "";
         this.list = new ArrayList<InterfaceItemBox>();
+        this.instantVolume = 0;
     }
 
     public Container(Container container) {
@@ -32,14 +36,26 @@ public class Container {
         this.volume = container.volume;
         this.serialNumber = container.serialNumber;
         this.list = new ArrayList<>();
+        this.instantVolume = container.instantVolume;
         for(InterfaceItemBox itemBox : container.list){
             list.add(itemBox.clone());
         }
     }
 
-    public void add(InterfaceItemBox itemBox)throws LoadedBoxException{
-        list.add(itemBox);
-        System.out.println("Item box with serial number " + itemBox.getSerialNumber() + " added to the container with serial number " + serialNumber);
+    public void add(InterfaceItemBox itemBox) throws ContainerCapacityException{
+        if(instantVolume+itemBox.getVolume()<=this.volume){
+            list.add(itemBox);
+        System.out.println("Item box with serial number " 
+        + itemBox.getSerialNumber() 
+        + " added to the container with serial number " 
+        + serialNumber);
+        instantVolume += itemBox.getVolume();
+        }
+
+        else{
+            throw new ContainerCapacityException("The box with serial number " + itemBox.getSerialNumber() + " can not be added to the container with serial number " + serialNumber + " because the container is full");
+        }
+        
     }
 
     public void add(InterfaceItem item)throws ItemPlacedDirectlyException{
@@ -51,11 +67,11 @@ public class Container {
         return code;
     }
 
-    public int getCost(){
+    public double getCost(){
         return costPerUnit * volume;
     }
 
-    public int getVolume() {
+    public double getVolume() {
         return volume;
     }
 
@@ -65,6 +81,14 @@ public class Container {
 
     public Container clone() {
         return new Container(this);
+    }
+
+    public double getRevenue(){
+        double revenue = 0;
+        for(InterfaceItemBox itemBox : list){
+            revenue += itemBox.getRevenue();
+        }
+        return revenue;
     }
 
     public String toString() {

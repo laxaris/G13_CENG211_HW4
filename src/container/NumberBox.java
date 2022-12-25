@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 import exceptions.LoadedBoxException;
 import exceptions.MismatchItemTypeException;
-import exceptions.MoreThanCapacityException;
+import exceptions.BoxCapacityException;
+import exceptions.ContainerCapacityException;
 import items.CountableItem;
 import items.InterfaceItem;
 
@@ -12,28 +13,31 @@ public class NumberBox implements InterfaceItemBox {
     
     private String code;
     private int numberOfItems;
-    private int volume;
+    private double volume;
     private String serialNumber;
     private final int costPerUnit = 2;
     private ArrayList<CountableItem> list;
-    private boolean loaded;
+    private double instantVolume;
+    private int instantNumberOfItems;
 
-    public NumberBox(String code, int numberOfItems, int volume, String serialNumber) {
+    public NumberBox(String code, int numberOfItems, double volume, String serialNumber) {
         this.code = code;
         this.numberOfItems = numberOfItems;
         this.volume = volume;
         this.serialNumber = serialNumber;
         this.list = new ArrayList<CountableItem>();
-        this.loaded = false;
+        this.instantVolume = 0;
+        this.instantNumberOfItems= 0;
     }
 
     
     public NumberBox() {
-        this.code = "";
-        this.numberOfItems = 0;
-        this.volume = 0;
-        this.serialNumber = "";
-        this.loaded = false;
+        this.code = "0";
+        this.numberOfItems = 10;
+        this.volume = 10;
+        this.serialNumber = "0";
+        this.instantVolume =0;
+        this.instantNumberOfItems = 0;
     }
 
     public NumberBox(NumberBox box) {
@@ -41,26 +45,19 @@ public class NumberBox implements InterfaceItemBox {
         this.numberOfItems = box.numberOfItems;
         this.volume = box.volume;
         this.serialNumber = box.serialNumber;
-         this.loaded = box.getLoaded();
+        this.instantVolume = box.instantVolume;
+        this.instantNumberOfItems = box.instantNumberOfItems;
     }
 
-    public void add(InterfaceItem item) throws MismatchItemTypeException, MoreThanCapacityException, LoadedBoxException{
+    public void add(InterfaceItem item) throws MismatchItemTypeException, BoxCapacityException, LoadedBoxException{
         misMatchChecker(item);
         capacityChecker((CountableItem) item);
-        addItemToLoadedBoxCheck();
         list.add((CountableItem) item);
-        System.out.println(serialNumber+" added item "+item.getSerialNumber());
+        instantVolume += item.getVolume();
+        instantNumberOfItems += 1;
+        System.out.println("Item with serial number "+item.getSerialNumber()+" added to numberBox with serial number "+serialNumber+"volume:" +instantVolume+ "number of items:"+instantNumberOfItems);
         
     }
-
-    private int totalVolume(){
-        int volume = 0;
-        for(InterfaceItem item : list){
-            volume += item.getVolume();
-        }
-        return volume;
-    }
-
     private int totalNumberOfItems(){
         return list.size();
     }
@@ -71,15 +68,9 @@ public class NumberBox implements InterfaceItemBox {
         }
     }
 
-    private void capacityChecker(CountableItem item) throws MoreThanCapacityException {
-        if(totalVolume()+item.getVolume() > this.volume || totalNumberOfItems()+1 > this.numberOfItems){
-            throw new MoreThanCapacityException("MassBox capacity is full");
-        }
-    }
-
-    private void addItemToLoadedBoxCheck() throws LoadedBoxException{
-        if(loaded == true){
-            throw new LoadedBoxException("This box is already placed in the container");
+    private void capacityChecker(CountableItem item) throws BoxCapacityException {
+        if(instantVolume+item.getVolume() >volume|| instantNumberOfItems+1 >numberOfItems){
+            throw new BoxCapacityException("Item with serial number "+item.getSerialNumber()+" cannot be added to massBox with serial number "+serialNumber);
         }
     }
 
@@ -94,7 +85,7 @@ public class NumberBox implements InterfaceItemBox {
     }
 
     @Override
-    public int getVolume() {
+    public double getVolume() {
         return volume;
     }
 
@@ -103,7 +94,7 @@ public class NumberBox implements InterfaceItemBox {
         return serialNumber;
     }
 
-    public int getCost(){
+    public double getCost(){
         return costPerUnit*volume;
     }
 
@@ -111,12 +102,12 @@ public class NumberBox implements InterfaceItemBox {
         return new NumberBox(this);
     }
 
-    public boolean getLoaded(){
-        return loaded;
-    }
-
-    public void setLoaded(boolean loaded){
-        this.loaded = loaded;
+    public double getRevenue(){
+        double revenue = 0;
+        for (CountableItem item : list){
+            revenue += item.getPrice();
+        }
+        return revenue;
     }
 
     public String toString() {
