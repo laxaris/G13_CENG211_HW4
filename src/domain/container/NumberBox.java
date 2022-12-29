@@ -2,22 +2,22 @@ package domain.container;
 
 import java.util.ArrayList;
 
-import domain.exceptions.LoadedBoxException;
+
+import domain.exceptions.LoadedItemException;
 import domain.exceptions.MismatchItemTypeException;
 import domain.exceptions.BoxCapacityException;
-import domain.items.CountableItem;
 import domain.items.Item;
 
 
 
-public class NumberBox<T extends CountableItem> extends ItemBox<Item> {
+public class NumberBox<T extends Item> extends ItemBox<T> {
     
  
     private int numberOfItems;
     private int instantNumberOfItems;
 
     public NumberBox(String code, int numberOfItems, double volume, String serialNumber) {
-    	super(code, volume, serialNumber, 2,  new ArrayList<Item>());
+    	super(code, volume, serialNumber, 2,  new ArrayList<T>());
         this.numberOfItems = numberOfItems;
         this.instantNumberOfItems= 0;
     }
@@ -34,14 +34,18 @@ public class NumberBox<T extends CountableItem> extends ItemBox<Item> {
         this.instantNumberOfItems = box.instantNumberOfItems;
     }
 
-    public void add(Item item) throws MismatchItemTypeException, BoxCapacityException, LoadedBoxException{
+
+    public void add(T item) throws MismatchItemTypeException, BoxCapacityException,  LoadedItemException{
         misMatchChecker(item);
-        capacityChecker( item);
+        capacityChecker(item);
         getList().add(item);
         setInstantVolume(item.getVolume()+ getInstantVolume());
         instantNumberOfItems += 1;
-        System.out.println("Item with serial number "+item.getSerialNumber()+" added to numberBox with serial number "+getSerialNumber()+"volume:" +getInstantVolume()+ "number of items:"+instantNumberOfItems);
-        
+        printLoadedString(item);
+    }
+
+    private void printLoadedString(T item){
+        System.out.println("Item "+ item.getSerialNumber()+" has been placed to the box "+ getSerialNumber()+"\n");
     }
     
     private void misMatchChecker(Item item)throws MismatchItemTypeException{
@@ -56,9 +60,6 @@ public class NumberBox<T extends CountableItem> extends ItemBox<Item> {
         }
     }
 
-
-   
-
     public int getNumberOfItems() {
         return numberOfItems;
     }
@@ -72,6 +73,10 @@ public class NumberBox<T extends CountableItem> extends ItemBox<Item> {
     public String toString() {
         return "Code: " + getCode() + " Number of Items: " + numberOfItems + " Volume: " + getVolume() + " Serial Number: "
                 + getSerialNumber()+" Cost: " + getCost();
+    }
+
+    public String stringOfProduction(){
+        return Math.round(getVolume())+" liters of number box has been produced with capacity of "+ getNumberOfItems()+" with the serial number "+getSerialNumber();
     }
     
 }

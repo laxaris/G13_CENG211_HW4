@@ -19,6 +19,9 @@ public class CountableItem extends Item {
         super(item); 
     }
 
+    public double getCost() {
+        return getCostPerUnit()*getVolume();
+    }
 
     public CountableItem clone(){
         return new CountableItem(this);
@@ -30,5 +33,10 @@ public class CountableItem extends Item {
     
     public String toString(){
         return "Name: "+ getName()+" Code: " + getCode() + " Volume: " + getVolume() + " Serial Number: " + getSerialNumber()+" Cost:" +getCost()+" Price:"+getPrice();
+    }
+
+    public String stringOfProduction(){
+        
+        return Math.round(getVolume())+" liters of "+getName()+" has been produced with serial number "+getSerialNumber();
     }
 }

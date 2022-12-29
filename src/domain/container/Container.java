@@ -3,8 +3,10 @@ package domain.container;
 import java.util.ArrayList;
 
 import domain.exceptions.ItemPlacedDirectlyException;
+import domain.exceptions.LoadedBoxException;
 import domain.items.Item;
 import domain.exceptions.ContainerCapacityException;
+import java.lang.Math;
 
 
 public class Container <T extends ItemBox<Item>> {
@@ -43,27 +45,33 @@ public class Container <T extends ItemBox<Item>> {
         }
     }
 
+    private void ContainerCapacityExceptionChecker(T box) throws ContainerCapacityException{
+        if(instantVolume+box.getVolume()>this.volume){
+            throw new ContainerCapacityException("The box with serial number " + box.getSerialNumber() + " can not be added to the container with serial number " + serialNumber + " because the container is full") ;
+        }
+    }
    
-	public void add(T itemBox) throws ContainerCapacityException{
-        if(instantVolume+itemBox.getVolume()<=this.volume){
-            list.add((T) itemBox);
-        System.out.println("Item box with serial number " 
-        + itemBox.getSerialNumber() 
-        + " added to the container with serial number " 
-        + serialNumber);
+	public void add(T itemBox) throws ContainerCapacityException, LoadedBoxException{
+        ContainerCapacityExceptionChecker(itemBox);
+        list.add((T) itemBox);
+        printLoadedString(itemBox);
         instantVolume += itemBox.getVolume();
-        }
-
-        else{
-            throw new ContainerCapacityException("The box with serial number " + itemBox.getSerialNumber() + " can not be added to the container with serial number " + serialNumber + " because the container is full") ;
-        }
         
     }
+
+    private void printLoadedString(T itemBox){
+        System.out.println("Box "+ itemBox.getSerialNumber()+" has been placed to the container "+ getSerialNumber()+"\n");
+    }
+
+
 
     public void add(Item item)throws ItemPlacedDirectlyException{
         throw new ItemPlacedDirectlyException("Item with serial number " + item.getSerialNumber() + " can not be placed directly into the container");
     }
 
+    public void remove(T box){
+        list.remove(box);
+    }
 
     public String getCode() {
         return code;
@@ -95,6 +103,10 @@ public class Container <T extends ItemBox<Item>> {
 
     public String toString() {
         return "Code: " + code + " Volume: " + volume + " Serial Number: " + serialNumber +" Cost: " + getCost();
+    }
+    
+    public String stringOfProduction(){
+        return Math.round(getVolume())+" liters of container has been produced with the serial number " + getSerialNumber();
     }
 
 

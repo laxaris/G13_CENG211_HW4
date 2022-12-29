@@ -34,11 +34,19 @@ public class UncountableItem extends Item {
         return new UncountableItem(this);
     }
 
+    public double getCost() {
+        return getCostPerUnit()*getMass();
+    }
+    
     public String getCountability(){
         return countability;
     }
     
     public String toString(){
         return "Name: "+ getName()+" Code: " + getCode() + " Volume: " + getVolume() + " Serial Number: " + getSerialNumber()+" Cost:" +getCost()+" Price:"+getPrice();
+    }
+
+    public String stringOfProduction(){
+        return Math.round(getMass())+" kilograms of "+getName()+" has been produced with serial number "+getSerialNumber();
     }
 }

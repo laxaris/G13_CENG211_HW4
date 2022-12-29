@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import domain.container.*;
+import domain.enums.Produce;
 import domain.exceptions.*;
 import domain.items.*;
+
 
 
 public class CommandMethods {
@@ -14,41 +16,27 @@ public class CommandMethods {
     private static HashMap<String,Item> itemMap = new HashMap<String,Item>();
     private static ArrayList<String> serialNumberList = new ArrayList<String>();
     private static double revenue = 0;
+   
     
     public static void produce(ArrayList<String> command) throws SameSerialNumberException {
         serialNumberExceptionChecker(command);
         switch(command.get(1)){
             case "B1":
-                ItemBox<Item> numberBox = new NumberBox<CountableItem>(command.get(1), Integer.parseInt(command.get(2)),Integer.parseInt(command.get(3)), command.get(4));
-                boxMap.put(numberBox.getSerialNumber(),numberBox);
-                revenue -= numberBox.getCost();
-                System.out.println(numberBox.toString()+" Revenue: "+revenue+"");
+                revenue = Produce.B1.produceItem(command, boxMap, revenue);
                 break;
             case "B2":
-                ItemBox<Item> massBox = new MassBox<UncountableItem>(command.get(1), Integer.parseInt(command.get(2)),Integer.parseInt(command.get(3)), command.get(4));
-                boxMap.put(massBox.getSerialNumber(), massBox);
-                revenue -= massBox.getCost();
-                System.out.println(massBox.toString()+" Revenue: "+revenue+"");
+                revenue = Produce.B2.produceItem(command, boxMap, revenue);
                 break;
             case "C1":
-                Container<ItemBox<Item>> container = new Container<>(command.get(1), Integer.parseInt(command.get(2)), command.get(3));
-                containerMap.put(container.getSerialNumber(),container);
-                revenue -= container.getCost();
-                System.out.println(container.toString()+" Revenue: "+revenue+"");
+                revenue = Produce.C1.produceItem(command, containerMap, revenue);
                 break;
             default:
             switch (domain.enums.Items.searchItem(command.get(1)).getCountability()) {
                 case "Countable":
-                    CountableItem countableItem = new CountableItem(command.get(1),Double.parseDouble(command.get(2)), command.get(3));
-                    itemMap.put(countableItem.getSerialNumber(),countableItem);
-                    revenue -= countableItem.getCost();
-                    System.out.println(countableItem.toString()+" Revenue: "+revenue+"");
+                    revenue = Produce.COUNTABLE.produceItem(command, itemMap, revenue);
                     break;
                 case "Uncountable":
-                    UncountableItem uncountableItem = new UncountableItem(command.get(1), Double.parseDouble(command.get(2)),Double.parseDouble(command.get(3)), command.get(4));
-                    itemMap.put(uncountableItem.getSerialNumber(),uncountableItem);
-                    revenue -= uncountableItem.getCost();
-                    System.out.println(uncountableItem.toString()+" Revenue: "+revenue+"");
+                    revenue = Produce.UNCOUNTABLE.produceItem(command, itemMap, revenue);
                     break;
                 default:
                     System.out.println("Invalid command");
@@ -59,11 +47,9 @@ public class CommandMethods {
         
     }
 
-   
-
     private static void serialNumberExceptionChecker(ArrayList<String> command) throws SameSerialNumberException{
         if(serialNumberList.contains(command.get(command.size()-1))){
-            throw new SameSerialNumberException("Item with the serial number "+ command.get(command.size()-1)+" cannot be produced (EX: 1 existing serial number");
+            throw new SameSerialNumberException("Item with the serial number "+ command.get(command.size()-1)+" cannot be produced because of existing serial number");
         }
         else{
             serialNumberList.add(command.get(command.size()-1));}
@@ -92,38 +78,40 @@ public class CommandMethods {
             }
         }
         else{
-            throw new LoadedBoxException(serialNumberOfLoadedItem+" cannot be loaded to "+serialNumberOfLoader+" (EX: 8 loaded box)");
+            throw new LoadedBoxException(serialNumberOfLoadedItem+" cannot be loaded to "+serialNumberOfLoader);
         }
-
-
     }
 
-
-
-    public static void ship(ArrayList<String> command) {
+    public static void ship(ArrayList<String> command) throws ShippedContainerException {
         String serialNumberOfShippedItem = command.get(1);
         if(containerMap.containsKey(serialNumberOfShippedItem)){
             revenue += containerMap.get(serialNumberOfShippedItem).getRevenue();
-            System.out.print("Container "+serialNumberOfShippedItem+" is shipped. \t" + "Revenue: "+revenue+"");
+            System.out.println("Container "+serialNumberOfShippedItem+" is shipped. \t" + "Revenue: "+Math.round(revenue*100.0)/100.0+"");
             containerMap.remove(serialNumberOfShippedItem);
         }
         else{
-            //To do : throw exception
+            throw new ShippedContainerException();
         }
  }
 
 
 
     public static void revenue(ArrayList<String> command) {
-        if(command.get(1).equals("1")){
-            double unearedRevenue = 0;
-            for(Item item : itemMap.values()){
-                unearedRevenue += item.getPrice();
+        if(command != null && command.get(1).equals("1")){
+            double unearnedRevenue = 0;
+            for(Container<ItemBox<Item>> container: containerMap.values()){
+                unearnedRevenue += container.getRevenue();      
             }
-            System.out.println("\nUnearned revenue: "+unearedRevenue+"\n");
+            for(ItemBox<Item> itemBox : boxMap.values() ){
+                unearnedRevenue += itemBox.getRevenue(); 
+            }  
+            for(Item item : itemMap.values()){
+                unearnedRevenue += item.getPrice();
+            }
+            System.out.println("\nUnearned revenue: "+unearnedRevenue+"\n");
         }
-        else if(command.get(1).equals("2")){
-            System.out.println("Total revenue: " + revenue+"\n");
+        else if(command != null && command.get(1).equals("2")){
+            System.out.println("Total revenue: " + Math.round(revenue*100.0)/100.0+"\n");
         }
     }
     

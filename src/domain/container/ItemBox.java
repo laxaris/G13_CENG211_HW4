@@ -1,5 +1,6 @@
 package domain.container;
 import domain.exceptions.LoadedBoxException;
+import domain.exceptions.LoadedItemException;
 import domain.exceptions.MismatchItemTypeException;
 
 import domain.items.Item;
@@ -70,7 +71,7 @@ public abstract class ItemBox<T extends Item> {
     
    
    
-    public abstract void add(T item) throws MismatchItemTypeException, BoxCapacityException, LoadedBoxException;
+    public abstract void add(T item) throws MismatchItemTypeException, BoxCapacityException, LoadedBoxException, LoadedItemException;
   
     public double getCost() {
         return costPerUnit*getVolume();
@@ -87,5 +88,9 @@ public abstract class ItemBox<T extends Item> {
         return revenue;
     }
     
+    public void remove(T item){
+        list.remove(item);
+    }
     
+    public abstract String stringOfProduction();
 }

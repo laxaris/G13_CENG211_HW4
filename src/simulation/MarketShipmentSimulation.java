@@ -19,18 +19,22 @@ public class MarketShipmentSimulation{
                 try{
                     CommandMethods.produce(command);}
                     catch(SameSerialNumberException e){
-                        System.out.println(e.getMessage());
+                        System.out.println(e.getMessage()+"\n");
                     }
                     break;
                 case "2":
                     try {
                         CommandMethods.load(command);
                     } catch (BoxCapacityException|LoadedItemException|ContainerCapacityException | MismatchItemTypeException|LoadedBoxException | ItemPlacedDirectlyException e) {
-                        System.out.println(e.getMessage());
+                        System.out.println(e.getMessage()+"\n");
                     }
                     break;
                 case "3":
-                    CommandMethods.ship(command); 
+                    try {
+                        CommandMethods.ship(command);
+                    } catch (ShippedContainerException e) {
+                        System.out.println(e.getMessage()+"\n");
+                    } 
                     break;
                 case "4":
                     CommandMethods.revenue(command);
@@ -41,6 +45,4 @@ public class MarketShipmentSimulation{
             }
         } 
     }
-
-    
 }

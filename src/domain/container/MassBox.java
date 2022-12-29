@@ -2,7 +2,8 @@ package domain.container;
 
 import java.util.ArrayList;
 
-import domain.exceptions.LoadedBoxException;
+
+import domain.exceptions.LoadedItemException;
 import domain.exceptions.MismatchItemTypeException;
 import domain.exceptions.BoxCapacityException;
 import domain.items.Item;
@@ -10,13 +11,13 @@ import domain.items.UncountableItem;
 
 
 
-public class MassBox<T extends UncountableItem> extends ItemBox<Item> {
+public class MassBox<T extends Item> extends ItemBox<T> {
     private double mass;
     private double instantMass;
 
 
     public MassBox(String code, double mass, double volume, String serialNumber) {
-    	super(code, volume, serialNumber, 3,  new ArrayList<Item>());
+    	super(code, volume, serialNumber, 3,  new ArrayList<T>());
         this.mass = mass;
         this.instantMass = 0;
     }
@@ -33,22 +34,23 @@ public class MassBox<T extends UncountableItem> extends ItemBox<Item> {
     }
 
 
-    
-	@SuppressWarnings("unchecked")
-	@Override
-    public void add(Item item) throws MismatchItemTypeException, BoxCapacityException, LoadedBoxException{
+    @Override
+    public void add(T item) throws MismatchItemTypeException, BoxCapacityException, LoadedItemException{
         misMatchChecker(item);
         capacityChecker(item);
-        getList().add( item);
+        getList().add(item);
         setInstantVolume(getInstantVolume() + item.getVolume());
-        instantMass += ((T)item).getMass();
-        System.out.println("Item with serial number "+item.getSerialNumber()+" added to massBox with serial number "+getSerialNumber());
+        instantMass += ((UncountableItem)item).getMass();
+        printLoadedString(item);
     }
 
     
-    @SuppressWarnings("unchecked")
-	private void capacityChecker(Item item)throws BoxCapacityException{
-        if (getInstantVolume() + item.getVolume() > getVolume()|| instantMass + ((T)item).getMass() > mass){
+    private void printLoadedString(T item){
+        System.out.println("Item "+ item.getSerialNumber()+" has been placed to the box "+ getSerialNumber()+"\n");
+    }
+
+	private void capacityChecker(T item)throws BoxCapacityException{
+        if (getInstantVolume() + item.getVolume() > getVolume()|| instantMass + ((UncountableItem)item).getMass() > mass){
             throw new BoxCapacityException("Item with serial number "+item.getSerialNumber()+" cannot be added to massBox with serial number "+getSerialNumber()+" because it is full");
         }
     }
@@ -60,11 +62,6 @@ public class MassBox<T extends UncountableItem> extends ItemBox<Item> {
         }
     }
     
-    
-
-   
-
-
 
     public double getMass() {
         return mass;
@@ -79,5 +76,9 @@ public class MassBox<T extends UncountableItem> extends ItemBox<Item> {
     public String toString(){
         return "Code: " + getCode() + " Mass: " + mass + " Volume: " + getVolume() + " Serial Number: " + getSerialNumber()+" Cost: " + getCost();
     }
-  
+    
+    public String stringOfProduction(){
+        return Math.round(getVolume()) + " liters of mass box has been produced with the capacity of " + getMass() + "with serial number of " + getSerialNumber();
+    }
+        
 }

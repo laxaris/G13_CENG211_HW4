@@ -40,7 +40,10 @@ public abstract class Item {
     }
     
     
-    
+    public int getCostPerUnit(){
+        return costPerUnit;
+    }
+
     public String getName() {
         return name;
     }
@@ -57,9 +60,7 @@ public abstract class Item {
         return serialNumber;
     }
 
-    public double getCost() {
-        return costPerUnit*volume;
-    }
+    public abstract double getCost();
 
     public double getPrice() {
         return pricePerUnit*volume;
@@ -70,5 +71,7 @@ public abstract class Item {
     public abstract String getCountability();
     
     public abstract String toString();
+    
+    public abstract String stringOfProduction();
     
 }
