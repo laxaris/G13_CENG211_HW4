@@ -75,6 +75,9 @@ public class NumberBox<T extends Item> extends ItemBox<T> {
                 + getSerialNumber()+" Cost: " + getCost();
     }
 
+    /*
+     * This method returns the string of the production of the number box
+     */
     public String stringOfProduction(){
         return Math.round(getVolume())+" liters of number box has been produced with capacity of "+ getNumberOfItems()+" with the serial number "+getSerialNumber();
     }

@@ -17,7 +17,11 @@ public class CommandMethods {
     private static ArrayList<String> serialNumberList = new ArrayList<String>();
     private static double revenue = 0;
    
-    
+    /**
+     * This method is used to produce items
+     * @param command
+     * @throws SameSerialNumberException
+     */
     public static void produce(ArrayList<String> command) throws SameSerialNumberException {
         serialNumberExceptionChecker(command);
         switch(command.get(1)){
@@ -55,6 +59,17 @@ public class CommandMethods {
             serialNumberList.add(command.get(command.size()-1));}
     }
 
+
+    /**
+     * This method is used to load items to boxes and containers
+     * @param command
+     * @throws LoadedBoxException
+     * @throws ItemPlacedDirectlyException
+     * @throws MismatchItemTypeException
+     * @throws ContainerCapacityException
+     * @throws LoadedItemException
+     * @throws BoxCapacityException
+     */
     public static void load(ArrayList<String> command) throws LoadedBoxException, ItemPlacedDirectlyException, MismatchItemTypeException, ContainerCapacityException, LoadedItemException, BoxCapacityException {
         String serialNumberOfLoader = command.get(2);
         String serialNumberOfLoadedItem = command.get(1);
@@ -81,7 +96,11 @@ public class CommandMethods {
             throw new LoadedBoxException(serialNumberOfLoadedItem+" cannot be loaded to "+serialNumberOfLoader);
         }
     }
-
+     /**
+      * This method is used to ship containers
+      * @param command
+      * @throws ShippedContainerException
+      */
     public static void ship(ArrayList<String> command) throws ShippedContainerException {
         String serialNumberOfShippedItem = command.get(1);
         if(containerMap.containsKey(serialNumberOfShippedItem)){
@@ -95,7 +114,10 @@ public class CommandMethods {
  }
 
 
-
+    /**
+     * This method is used calculate revenue
+     * @param command
+     */
     public static void revenue(ArrayList<String> command) {
         if(command != null && command.get(1).equals("1")){
             double unearnedRevenue = 0;

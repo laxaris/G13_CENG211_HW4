@@ -15,6 +15,11 @@ public enum Items{
         this.itemCode = itemCode;
     }
 
+    /**
+     * This method is used to search item by item code
+     * @param itemCode
+     * @return
+     */
     public static Items searchItem(String itemCode){
         for(Items item : Items.values()){
             if(item.getItemCode().equals(itemCode)){

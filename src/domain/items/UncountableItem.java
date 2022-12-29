@@ -46,6 +46,10 @@ public class UncountableItem extends Item {
         return "Name: "+ getName()+" Code: " + getCode() + " Volume: " + getVolume() + " Serial Number: " + getSerialNumber()+" Cost:" +getCost()+" Price:"+getPrice();
     }
 
+
+    /*
+     * This method returns the string of the production of the container
+     */
     public String stringOfProduction(){
         return Math.round(getMass())+" kilograms of "+getName()+" has been produced with serial number "+getSerialNumber();
     }

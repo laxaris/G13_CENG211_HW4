@@ -77,6 +77,9 @@ public class MassBox<T extends Item> extends ItemBox<T> {
         return "Code: " + getCode() + " Mass: " + mass + " Volume: " + getVolume() + " Serial Number: " + getSerialNumber()+" Cost: " + getCost();
     }
     
+    /*
+     * This method returns the string of the production of the mass box
+     */
     public String stringOfProduction(){
         return Math.round(getVolume()) + " liters of mass box has been produced with the capacity of " + getMass() + "with serial number of " + getSerialNumber();
     }

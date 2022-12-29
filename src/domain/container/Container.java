@@ -17,6 +17,7 @@ public class Container <T extends ItemBox<Item>> {
     private String serialNumber;
     private final int costPerUnit = 1;
 
+
     public Container(String code, double volume, String serialNumber) {
         this.code = code;
         this.volume = volume;
@@ -44,13 +45,11 @@ public class Container <T extends ItemBox<Item>> {
             list.add((T) itemBox.clone());
         }
     }
-
     private void ContainerCapacityExceptionChecker(T box) throws ContainerCapacityException{
         if(instantVolume+box.getVolume()>this.volume){
             throw new ContainerCapacityException("The box with serial number " + box.getSerialNumber() + " can not be added to the container with serial number " + serialNumber + " because the container is full") ;
         }
     }
-   
 	public void add(T itemBox) throws ContainerCapacityException, LoadedBoxException{
         ContainerCapacityExceptionChecker(itemBox);
         list.add((T) itemBox);
@@ -105,6 +104,9 @@ public class Container <T extends ItemBox<Item>> {
         return "Code: " + code + " Volume: " + volume + " Serial Number: " + serialNumber +" Cost: " + getCost();
     }
     
+    /*
+     * This method returns the string of the production of the container
+     */
     public String stringOfProduction(){
         return Math.round(getVolume())+" liters of container has been produced with the serial number " + getSerialNumber();
     }
